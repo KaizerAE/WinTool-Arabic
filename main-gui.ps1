@@ -1,89 +1,269 @@
-# واجهة رسومية لـ WinTool-Arabic
-# GUI for WinTool-Arabic
-# Created by Kaizer
+# WinTool-Arabic - واجهة برنامج إدارة ويندوز شاملة
+# تصميم شبيه WinUtil (Chris Titus Tech)
+# Author: Kaizer
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-# إنشاء النموذج الرئيسي
 $form = New-Object System.Windows.Forms.Form
-$form.Text = 'kaizer'
-$form.Size = New-Object System.Drawing.Size(600,500)
+$form.Text = 'WinTool-Arabic - أدوات ويندوز'
+$form.Size = New-Object System.Drawing.Size(820, 670)
 $form.StartPosition = 'CenterScreen'
-$form.BackColor = [System.Drawing.Color]::FromArgb(45,45,48)
+$form.BackColor = [System.Drawing.Color]::FromArgb(36, 36, 40)
 $form.ForeColor = [System.Drawing.Color]::White
 $form.FormBorderStyle = 'FixedDialog'
 $form.MaximizeBox = $false
 
-# عنوان البرنامج
-$labelTitle = New-Object System.Windows.Forms.Label
-$labelTitle.Location = New-Object System.Drawing.Point(10,20)
-$labelTitle.Size = New-Object System.Drawing.Size(560,40)
-$labelTitle.Text = 'WinTool-Arabic - أدوات ويندوز'
-$labelTitle.Font = New-Object System.Drawing.Font('Segoe UI',16,[System.Drawing.FontStyle]::Bold)
-$labelTitle.TextAlign = 'MiddleCenter'
-$labelTitle.ForeColor = [System.Drawing.Color]::White
-$form.Controls.Add($labelTitle)
+# --- Tabs Section ---
+$tabControl = New-Object System.Windows.Forms.TabControl
+$tabControl.Location = New-Object System.Drawing.Point(10, 60)
+$tabControl.Size = New-Object System.Drawing.Size(780, 580)
+$tabControl.Font = New-Object System.Drawing.Font('Segoe UI', 10)
+$tabControl.BackColor = [System.Drawing.Color]::FromArgb(36,36,40)
+$tabControl.ForeColor = [System.Drawing.Color]::White
 
-# صندوق الخيارات
-$groupBox = New-Object System.Windows.Forms.GroupBox
-$groupBox.Location = New-Object System.Drawing.Point(20,80)
-$groupBox.Size = New-Object System.Drawing.Size(550,300)
-$groupBox.Text = 'خيارات التفعيل والإغلاق'
-$groupBox.ForeColor = [System.Drawing.Color]::LightGray
-$groupBox.Font = New-Object System.Drawing.Font('Segoe UI',10)
-$form.Controls.Add($groupBox)
-
-# إنشاء الأزرار المرقمة
-$yPosition = 30
-$options = @(
-    @{Number='1'; Text='تفعيل Windows Defender'}
-    @{Number='2'; Text='إيقاف Windows Defender'}
-    @{Number='3'; Text='تفعيل Windows Update'}
-    @{Number='4'; Text='إيقاف Windows Update'}
-    @{Number='5'; Text='تفعيل Firewall'}
-    @{Number='6'; Text='إيقاف Firewall'}
-    @{Number='7'; Text='تنظيف ملفات النظام'}
-    @{Number='8'; Text='تحسين أداء النظام'}
+# Tabs: Install, Tweaks, Config, Updates, MicroWin
+$tabs = @(
+    @{name='Install'; caption='تثبيت البرامج';},
+    @{name='Tweaks'; caption='تعديلات وتحسينات';},
+    @{name='Config'; caption='الإعدادات';},
+    @{name='Updates'; caption='التحديثات';},
+    @{name='MicroWin'; caption='أدوات إضافية'}
 )
 
-foreach ($option in $options) {
-    $button = New-Object System.Windows.Forms.Button
-    $button.Location = New-Object System.Drawing.Point(20,$yPosition)
-    $button.Size = New-Object System.Drawing.Size(500,30)
-    $button.Text = "$($option.Number). $($option.Text)"
-    $button.Font = New-Object System.Drawing.Font('Segoe UI',9)
-    $button.BackColor = [System.Drawing.Color]::FromArgb(63,63,70)
-    $button.ForeColor = [System.Drawing.Color]::White
-    $button.FlatStyle = 'Flat'
-    $button.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(85,85,85)
-    $button.FlatAppearance.MouseOverBackColor = [System.Drawing.Color]::FromArgb(75,75,82)
-    $button.Tag = $option.Number
-    $button.Add_Click({
-        $selectedOption = $this.Tag
-        [System.Windows.Forms.MessageBox]::Show(
-            "تم اختيار الخيار رقم: $selectedOption`n`nسيتم تنفيذ العملية...`n",
-            'تأكيد',
-            [System.Windows.Forms.MessageBoxButtons]::OK,
-            [System.Windows.Forms.MessageBoxIcon]::Information
-        )
-    })
-    $groupBox.Controls.Add($button)
-    $yPosition += 35
+$tabPages = @{}
+foreach ($t in $tabs) {
+    $tp = New-Object System.Windows.Forms.TabPage
+    $tp.Text = $t.caption
+    $tp.Name = $t.name
+    $tp.BackColor = [System.Drawing.Color]::FromArgb(36,36,40)
+    $tp.ForeColor = [System.Drawing.Color]::White
+    $tabPages[$t.name] = $tp
+    $tabControl.Controls.Add($tp)
 }
 
-# زر الخروج
-$btnExit = New-Object System.Windows.Forms.Button
-$btnExit.Location = New-Object System.Drawing.Point(450,400)
-$btnExit.Size = New-Object System.Drawing.Size(120,40)
-$btnExit.Text = 'إغلاق'
-$btnExit.Font = New-Object System.Drawing.Font('Segoe UI',10,[System.Drawing.FontStyle]::Bold)
-$btnExit.BackColor = [System.Drawing.Color]::FromArgb(200,50,50)
-$btnExit.ForeColor = [System.Drawing.Color]::White
-$btnExit.FlatStyle = 'Flat'
-$btnExit.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(150,40,40)
-$btnExit.Add_Click({ $form.Close() })
-$form.Controls.Add($btnExit)
+# -------------- Tweaks Page --------------
+$tweaksPanel = New-Object System.Windows.Forms.Panel
+$tweaksPanel.Dock = 'Fill'
+$tweaksPanel.AutoScroll = $true
+$tabPages['Tweaks'].Controls.Add($tweaksPanel)
 
-# عرض النموذج
+$y = 10
+$checkboxes = @()
+$tweaksList = @(
+    @{txt='تعطيل Telemetry وتتبع مايكروسوفت';var='DisableTelemetry';desc='إيقاف إرسال بيانات الاستخدام إلى مايكروسوفت.'},
+    @{txt='إزالة البرامج المثبتة مسبقاً (Debloat)';var='RemoveBloatware';desc='حذف تطبيقات مثل Candy Crush.'},
+    @{txt='تفعيل الوضع المظلم';var='EnableDarkMode';desc='تطبيق الثيم المظلم على الويندوز.'},
+    @{txt='مركز شريط المهام';var='TaskbarCenter';desc='جعل رموز شريط المهام في المنتصف.'},
+    @{txt='إظهار زر البحث';var='ShowSearchButton';desc='إظهار زر البحث بجانب القائمة.'},
+    @{txt='إظهار امتدادات الملفات';var='ShowFileExtensions';desc='عرض امتدادات جميع الملفات.'},
+    @{txt='تعطيل OneDrive';var='DisableOneDrive';desc='إيقاف مزامنة التخزين السحابي.'},
+    @{txt='تعطيل Cortana';var='DisableCortana';desc='إيقاف المساعد الصوتي Cortana.'},
+    @{txt='تفعيل Ultimate Performance';var='EnableUltimatePower';desc='تفعيل أفضل خطط الطاقة.'},
+    @{txt='إيقاف الخدمات غير الضرورية';var='DisableUnneededServices';desc='إيقاف خدمات غير هامة للأداء.'},
+    @{txt='زيادة سرعة إقلاع الويندوز';var='FasterStartup';desc='إلغاء البرامج من بدء التشغيل.'},
+    @{txt='تعطيل الإعلانات بالنظام';var='DisableSystemAds';desc='إيقاف الإعلانات في القائمة والإشعارات.'}
+)
+foreach ($tw in $tweaksList) {
+    $cb = New-Object System.Windows.Forms.CheckBox
+    $cb.Text = $tw.txt
+    $cb.Name = $tw.var
+    $cb.AutoSize = $true
+    $cb.Location = New-Object System.Drawing.Point(20, $y)
+    $cb.ForeColor = [System.Drawing.Color]::White
+    $cb.Font = New-Object System.Drawing.Font('Segoe UI', 12)
+    $descLbl = New-Object System.Windows.Forms.Label
+    $descLbl.Text = $tw.desc
+    $descLbl.Location = New-Object System.Drawing.Point(300, $y+2)
+    $descLbl.Size = New-Object System.Drawing.Size(400, 28)
+    $descLbl.Font = New-Object System.Drawing.Font('Segoe UI',10)
+    $descLbl.ForeColor = [System.Drawing.Color]::LightGray
+    $tweaksPanel.Controls.Add($cb)
+    $tweaksPanel.Controls.Add($descLbl)
+    $checkboxes += $cb
+    $y += 38
+}
+
+# زر تطبيق التعديلات
+$btnApplyTweaks = New-Object System.Windows.Forms.Button
+$btnApplyTweaks.Text = 'تطبيق التعديلات المحددة'
+$btnApplyTweaks.Location = New-Object System.Drawing.Point(20, $y+20)
+$btnApplyTweaks.Size = New-Object System.Drawing.Size(200,40)
+$btnApplyTweaks.Font = New-Object System.Drawing.Font('Segoe UI',12)
+$btnApplyTweaks.BackColor = [System.Drawing.Color]::FromArgb(69,183,61)
+$btnApplyTweaks.ForeColor = [System.Drawing.Color]::White
+$btnApplyTweaks.FlatStyle = 'Flat'
+$btnApplyTweaks.Add_Click({
+    $result = @()
+    foreach ($cb in $checkboxes) { if ($cb.Checked) { $result += $cb.Text; } }
+    [Windows.Forms.MessageBox]::Show("سيتم تنفيذ التعديلات التالية:`n"+$($result -join "`n"),'تطبيق التعديلات',[Windows.Forms.MessageBoxButtons]::OK,[Windows.Forms.MessageBoxIcon]::Information)
+    # هنا يتم تنفيذ الأوامر البرمجية (للتعديلات)
+})
+$tweaksPanel.Controls.Add($btnApplyTweaks)
+
+# زر استعادة الوضع الافتراضي
+$btnRestoreDef = New-Object System.Windows.Forms.Button
+$btnRestoreDef.Text = 'استعادة الوضع الافتراضي'
+$btnRestoreDef.Location = New-Object System.Drawing.Point(240, $y+20)
+$btnRestoreDef.Size = New-Object System.Drawing.Size(200,40)
+$btnRestoreDef.Font = New-Object System.Drawing.Font('Segoe UI',12)
+$btnRestoreDef.BackColor = [System.Drawing.Color]::FromArgb(176,57,57)
+$btnRestoreDef.ForeColor = [System.Drawing.Color]::White
+$btnRestoreDef.FlatStyle = 'Flat'
+$btnRestoreDef.Add_Click({
+    [Windows.Forms.MessageBox]::Show('سيتم إعادة جميع الخيارات للإعدادات الافتراضية','استعادة',[Windows.Forms.MessageBoxButtons]::OK,[Windows.Forms.MessageBoxIcon]::Information)
+    foreach ($cb in $checkboxes) { $cb.Checked = $false }
+})
+$tweaksPanel.Controls.Add($btnRestoreDef)
+
+# -------------- Install Page --------------
+$installPanel = New-Object System.Windows.Forms.Panel
+$installPanel.Dock = 'Fill'
+$installPanel.AutoScroll = $true
+$tabPages['Install'].Controls.Add($installPanel)
+
+$y2 = 10
+$programsList = @(
+    @{txt='Google Chrome';var='Chrome'},
+    @{txt='Mozilla Firefox';var='Firefox'},
+    @{txt='VLC Media Player';var='VLC'},
+    @{txt='7-Zip';var='7zip'},
+    @{txt='Git';var='Git'},
+    @{txt='VS Code';var='VSCode'},
+    @{txt='Telegram';var='Telegram'},
+    @{txt='Discord';var='Discord'},
+    @{txt='Notepad++';var='Notepad++'},
+    @{txt='WinRAR';var='WinRAR'},
+    @{txt='PowerToys';var='PowerToys'}
+)
+$progCheckBoxes = @()
+foreach ($pr in $programsList) {
+    $cb = New-Object System.Windows.Forms.CheckBox
+    $cb.Text = $pr.txt
+    $cb.Name = $pr.var
+    $cb.AutoSize = $true
+    $cb.Location = New-Object System.Drawing.Point(20, $y2)
+    $cb.ForeColor = [System.Drawing.Color]::White
+    $cb.Font = New-Object System.Drawing.Font('Segoe UI', 12)
+    $installPanel.Controls.Add($cb)
+    $progCheckBoxes += $cb
+    $y2 += 36
+}
+
+$btnInstallPgms = New-Object System.Windows.Forms.Button
+$btnInstallPgms.Text = 'تثبيت البرامج المحددة'
+$btnInstallPgms.Location = New-Object System.Drawing.Point(20, $y2+10)
+$btnInstallPgms.Size = New-Object System.Drawing.Size(200,40)
+$btnInstallPgms.Font = New-Object System.Drawing.Font('Segoe UI',12)
+$btnInstallPgms.BackColor = [System.Drawing.Color]::FromArgb(32,146,243)
+$btnInstallPgms.ForeColor = [System.Drawing.Color]::White
+$btnInstallPgms.FlatStyle = 'Flat'
+$btnInstallPgms.Add_Click({
+    $result = @()
+    foreach ($cb in $progCheckBoxes) { if ($cb.Checked) { $result += $cb.Text; } }
+    [Windows.Forms.MessageBox]::Show("سيتم تثبيت البرامج التالية:`n"+$($result -join "`n"),'تثبيت البرامج',[Windows.Forms.MessageBoxButtons]::OK,[Windows.Forms.MessageBoxIcon]::Information)
+    # هنا يتم تنفيذ أوامر Winget أو Chocolatey
+})
+$installPanel.Controls.Add($btnInstallPgms)
+
+# -------------- Config Page --------------
+$configPanel = New-Object System.Windows.Forms.Panel
+$configPanel.Dock = 'Fill'
+$configPanel.AutoScroll = $true
+$tabPages['Config'].Controls.Add($configPanel)
+
+$y3 = 10
+$configList = @(
+    @{txt='تفعيل وضع الأداء العالي';desc='ضبط إعدادات الطاقة لأداء أقوى.'},
+    @{txt='تغيير اللغة إلى العربية';desc='تحويل واجهة النظام إلى اللغة العربية.'},
+    @{txt='تعديل إعدادات الخصوصية';desc='ضبط ميزات الخصوصية بحسب رغبتك.'},
+    @{txt='إعداد نقطة استعادة النظام';desc='إنشاء Restore Point قبل أي تغييرات.'}
+)
+foreach ($cfg in $configList) {
+    $cb = New-Object System.Windows.Forms.CheckBox
+    $cb.Text = $cfg.txt
+    $cb.AutoSize = $true
+    $cb.Font = New-Object System.Drawing.Font('Segoe UI',11)
+    $cb.Location = New-Object System.Drawing.Point(20,$y3)
+    $cb.ForeColor = [System.Drawing.Color]::White
+    $lbl = New-Object System.Windows.Forms.Label
+    $lbl.Text = $cfg.desc
+    $lbl.Location = New-Object System.Drawing.Point(320, $y3+2)
+    $lbl.Size = New-Object System.Drawing.Size(400,28)
+    $lbl.Font = New-Object System.Drawing.Font('Segoe UI',9)
+    $lbl.ForeColor = [System.Drawing.Color]::LightGray
+    $configPanel.Controls.Add($cb)
+    $configPanel.Controls.Add($lbl)
+    $y3 += 38
+}
+
+# -------------- Updates Page --------------
+$updatesPanel = New-Object System.Windows.Forms.Panel
+$updatesPanel.Dock = 'Fill'
+$updatesPanel.AutoScroll = $true
+$tabPages['Updates'].Controls.Add($updatesPanel)
+
+$y4 = 10
+$updatesList = @(
+    @{txt='إيقاف التحديثات الإجبارية';desc='منع فرض التحديثات من ويندوز.'},
+    @{txt='تحديث جميع البرامج';desc='تشغيل تحديث شامل لكل البرامج.'},
+    @{txt='تحديث النظام الآن';desc='تشغيل Windows Update فوراً.'}
+)
+foreach ($up in $updatesList) {
+    $cb = New-Object System.Windows.Forms.CheckBox
+    $cb.Text = $up.txt
+    $cb.AutoSize = $true
+    $cb.Font = New-Object System.Drawing.Font('Segoe UI',11)
+    $cb.Location = New-Object System.Drawing.Point(20,$y4)
+    $cb.ForeColor = [System.Drawing.Color]::White
+    $lbl = New-Object System.Windows.Forms.Label
+    $lbl.Text = $up.desc
+    $lbl.Location = New-Object System.Drawing.Point(320, $y4+2)
+    $lbl.Size = New-Object System.Drawing.Size(400,28)
+    $lbl.Font = New-Object System.Drawing.Font('Segoe UI',9)
+    $lbl.ForeColor = [System.Drawing.Color]::LightGray
+    $updatesPanel.Controls.Add($cb)
+    $updatesPanel.Controls.Add($lbl)
+    $y4 += 38
+}
+
+# -------------- MicroWin Page (Extra tools) --------------
+$microPanel = New-Object System.Windows.Forms.Panel
+$microPanel.Dock = 'Fill'
+$microPanel.AutoScroll = $true
+$tabPages['MicroWin'].Controls.Add($microPanel)
+$y5 = 10
+$extrasList = @(
+    @{txt='مدير العمليات المتقدمة';desc='قم بفحص وإغلاق العمليات تلقائياً.'},
+    @{txt='تنظيف الريجستري';desc='تنظيف وحذف الإدخالات غير المهمة.'},
+    @{txt='تشخيص مشاكل الانترنت';desc='تشغيل أداة فحص الشبكة.'}
+)
+foreach ($ex in $extrasList) {
+    $cb = New-Object System.Windows.Forms.CheckBox
+    $cb.Text = $ex.txt
+    $cb.AutoSize = $true
+    $cb.Font = New-Object System.Drawing.Font('Segoe UI',11)
+    $cb.Location = New-Object System.Drawing.Point(20,$y5)
+    $cb.ForeColor = [System.Drawing.Color]::White
+    $lbl = New-Object System.Windows.Forms.Label
+    $lbl.Text = $ex.desc
+    $lbl.Location = New-Object System.Drawing.Point(320, $y5+2)
+    $lbl.Size = New-Object System.Drawing.Size(400,28)
+    $lbl.Font = New-Object System.Drawing.Font('Segoe UI',9)
+    $lbl.ForeColor = [System.Drawing.Color]::LightGray
+    $microPanel.Controls.Add($cb)
+    $microPanel.Controls.Add($lbl)
+    $y5 += 38
+}
+
+# --- إضافة عنصر رئيسي أعلى الصفحة (العنوان) ---
+$labelTitle = New-Object System.Windows.Forms.Label
+$labelTitle.Location = New-Object System.Drawing.Point(12,12)
+$labelTitle.Size = New-Object System.Drawing.Size(780,40)
+$labelTitle.Font = New-Object System.Drawing.Font('Segoe UI',20,[System.Drawing.FontStyle]::Bold)
+$labelTitle.Text = 'WinTool-Arabic - Advanced Windows Utility'
+$labelTitle.ForeColor = [System.Drawing.Color]::White
+$labelTitle.TextAlign = 'MiddleCenter'
+$form.Controls.Add($labelTitle)
+$form.Controls.Add($tabControl)
 $form.ShowDialog() | Out-Null
